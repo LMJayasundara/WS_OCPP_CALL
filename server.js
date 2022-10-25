@@ -4,7 +4,7 @@ var express = require('express');
 var app = express();
 const PORT = 8080;
 
-const RPCServer = require('./src/serverj');
+const RPCServer = require('./src/server');
 
 var server = new http.createServer({
 }, app);

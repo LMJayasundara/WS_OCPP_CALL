@@ -10,16 +10,11 @@ class RPCServer{
     constructor(client, msg) {
         this.client = client;
         this.msg = msg;
-        this._wildcardHandler = null;
         this._handlers = new Map();
     }
 
     async handle(method, handler) {
-        if (method instanceof Function && !handler) {
-            this._wildcardHandler = method;
-        } else {
-            this._handlers.set(method, handler);
-        }
+        this._handlers.set(method, handler);
     }
 
     async onMessage(method, params) {
@@ -76,9 +71,6 @@ class RPCServer{
 
                             let handler = this._handlers.get(action);
                             if (!handler) {
-                                handler = this._wildcardHandler;
-                            }
-                            if (!handler) {
                                 throw createError("NotImplemented", `Unable to handle '${method}' calls`, {});
                             }
 
@@ -118,7 +110,7 @@ class RPCServer{
                             }
 
                             try {
-                                await this.sendMessage(messageId, result, CALLRESULT_MESSAGE);
+                                await this.sendMessage(CALLRESULT_MESSAGE, messageId, result);
                             } catch (error) {
                                 throw createError("InternalError", error.message, {});
                             }
@@ -139,11 +131,11 @@ class RPCServer{
             }
 
         } catch (error) {
-            await this.sendMessage(messageId, error.message, CALLERROR_MESSAGE);
+            await this.sendMessage(CALLERROR_MESSAGE, messageId, error.message);
         }
     }
 
-    async sendMessage (messageId, command, messageType = CALLRESULT_MESSAGE) {
+    async sendMessage (messageType = CALLRESULT_MESSAGE, messageId, command) {
         return new Promise((resolve, reject) => {
             let messageToSend;
             messageToSend = JSON.stringify([messageType, messageId, command]);

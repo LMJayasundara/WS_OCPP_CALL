@@ -3,8 +3,6 @@ const username = "ID001";
 const URL = "ws://127.0.0.1:8080/";
 var reconn = null;
 
-const RPCClient = require('./src/clientj');
-
 function startWebsocket() {
     var ws = new WebSocket(URL, {
         perMessageDeflate: false,
@@ -13,8 +11,6 @@ function startWebsocket() {
         },
     });
 
-    const cli = new RPCClient(ws);
-
     const bootNotificationParams =  {
         "reason": "PowerUp",
         "chargingStation": {
@@ -22,12 +18,11 @@ function startWebsocket() {
             "vendorName": "VendorX"
         }
     };
-    // const payload = [2, "19223201", "BootNotification", params];
+    const payload = [2, "19223201", "BootNotification", bootNotificationParams];
 
-    ws.on('open', function() {
+    ws.on('open', async function() {
         clearInterval(reconn);
-        // ws.send(JSON.stringify(payload));
-        cli.call("BootNotification", bootNotificationParams)
+        ws.send(JSON.stringify(payload));
     });
 
     ws.on('message', function(msg) {

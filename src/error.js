@@ -87,4 +87,4 @@ function createError(type, message, details) {
     return err;
 }
 
-module.exports = { createError }
+module.exports = { createError, TimeoutError }
