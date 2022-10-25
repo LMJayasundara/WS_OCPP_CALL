@@ -6,7 +6,7 @@ const {createValidator } = require('./validator');
 // const validator = createValidator('ocpp1.6', require('../schemas/ocpp1_6.json'));
 const validator = createValidator('ocpp2.0.1', require('../schemas/ocpp2_0_1.json'));
 
-class server_res{
+class RPCServer{
     constructor(client, msg) {
         this.client = client;
         this.msg = msg;
@@ -152,10 +152,10 @@ class server_res{
                 this.client.send(messageToSend);
                 resolve();
             } else {
-                return onRejectResponse(`Socket closed ${messageId}`);
+                console.log(`Socket closed ${messageId}`);
             }
         });
     }
 }
 
-module.exports = server_res;
+module.exports = RPCServer;

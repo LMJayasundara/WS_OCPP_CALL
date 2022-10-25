@@ -4,7 +4,7 @@ var express = require('express');
 var app = express();
 const PORT = 8080;
 
-const server_res = require('./src/serverj');
+const RPCServer = require('./src/serverj');
 
 var server = new http.createServer({
 }, app);
@@ -30,9 +30,9 @@ wss.on('connection', async function (ws, request) {
         }).then(async (client)=>{
 
             if(client != undefined){
-                let req_res = new server_res(client, msg);
+                let ser = new RPCServer(client, msg);
 
-                await req_res.onMessage("BootNotification", {
+                await ser.onMessage("BootNotification", {
                     status: "Accepted",
                     interval: 300,
                     currentTime: new Date().toISOString()
